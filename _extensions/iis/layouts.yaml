@@ -1,0 +1,114 @@
+# Mapping of logical slide layouts to the Fraunhofer IIS PowerPoint template.
+#
+# Layouts are addressed by their position in the template (1-based). The order
+# is identical in the German and the English file, only the names differ.
+# Placeholders are addressed by their idx, which is also identical in both.
+
+assets: assets/fraunhofer
+
+templates:
+  de: Präsentation-Fraunhofer-IIS-Vorlage-mit-Font-DE.pptx
+  en: Präsentation-Fraunhofer-IIS-Vorlage-mit-Font-EN.pptx
+
+# Background picture of the title slide, selected by `iis-titlepage`.
+title-images:
+  1: beamer theme IIS V1_05_2026/images/Titelseite1_Chip_HG.jpg
+  2: beamer theme IIS V1_05_2026/images/Titelseite2_building_IIS.jpg
+
+strings:
+  de:
+    closing: "Vielen Dank für Ihre Aufmerksamkeit"
+    footer: "© Fraunhofer IIS"
+    date-format: "%d.%m.%Y"
+    locale: de-DE
+  en:
+    closing: "Thank you for your attention"
+    footer: "© Fraunhofer IIS"
+    date-format: "%d/%m/%Y"
+    locale: en-US
+
+# Text box of the slide master that carries the information classification;
+# its text is replaced by the metadata key `classification`.
+classification-shape: Informationsklassifizierung
+
+# Lower edge of the area usable for content (the footer line sits at 17.1 cm).
+content-bottom-cm: 16.4
+# Gap between stacked elements and between generated columns.
+gap-cm: 0.4
+column-gap-cm: 1.07
+
+# Paragraph levels of the body placeholders (0-based, as in the slide master).
+levels:
+  subheading: 0   # bold, accent colour
+  text: 1         # copy text
+  heading: 2      # bold paragraph heading
+  list: 3         # first of three bullet levels
+
+fonts:
+  bold: "+mj-lt"  # the template uses the bold family instead of the bold flag
+  code: Consolas
+  code-size: 12
+  code-size-min: 8
+  table-size: 12
+  caption-size: 10
+
+layouts:
+  title:
+    layout: 1
+    picture: 10
+    text: 11
+  section:
+    layout: 12
+    text: 11
+  closing:
+    layout: 29
+    text: 11
+  quote:
+    layout: 24
+    text: 13
+  content:
+    layout: 19
+    title: 0
+    subline: 13
+    body: [14]
+    sizes: {subheading: 16, text: 14, heading: 14, list: 14}
+  content-large:
+    layout: 20
+    title: 0
+    subline: 13
+    body: [14]
+    sizes: {subheading: 18, text: 16, heading: 16, list: 16}
+  columns-2:
+    layout: 14
+    title: 0
+    subline: 13
+    body: [14, 15]
+    sizes: {subheading: 16, text: 14, heading: 14, list: 14}
+  columns-3:
+    layout: 15
+    title: 0
+    subline: 13
+    body: [14, 15, 16]
+    sizes: {subheading: 16, text: 14, heading: 14, list: 14}
+  columns-4:
+    layout: 16
+    title: 0
+    subline: 13
+    body: [14, 15, 16, 17]
+    sizes: {subheading: 16, text: 14, heading: 14, list: 14}
+  image-right:
+    layout: 17
+    title: 0
+    subline: 17
+    body: [18]
+    picture: 13
+    sizes: {subheading: 16, text: 14, heading: 14, list: 14}
+  image-left:
+    # no layout with a picture on the left exists: the left column of the
+    # two column layout takes the picture
+    layout: 14
+    title: 0
+    subline: 13
+    body: [15]
+    picture-region: 14
+    sizes: {subheading: 16, text: 14, heading: 14, list: 14}

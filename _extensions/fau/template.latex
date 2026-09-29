@@ -1,0 +1,151 @@
+% Pandoc template for the fau-beamer theme (https://github.com/FAU-AMMN/fau-beamer).
+% The theme resolves styles/ and template-art/ relative to the working directory;
+% tools/stage.py links both into the deck directory.
+\documentclass[final,ignorenonframetext$if(handout)$,handout$endif$]{beamer}
+
+\usepackage[institute=$if(fau-institute)$$fau-institute$$else$FAU$endif$,
+            aspectratio=$if(aspectratio)$$aspectratio$$else$169$endif$,
+            fontsize=11,
+            fontbaselineskip=13,
+            scale=1.,
+            InsertTotalFoot
+           ]{styles/beamerthemefau}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[shorthands=off,$if(babel-lang)$$babel-lang$$else$english$endif$]{babel}
+
+\IfFileExists{isomath.sty}{\usepackage{isomath}}{}
+\usefonttheme[onlymath]{serif}
+\usepackage{exscale}
+\usepackage{anyfontsize}
+\usepackage{amsmath,amssymb}
+\setbeamercolor{alerted text}{fg=BaseColor}
+
+% ---- pandoc support -----------------------------------------------------------
+\usepackage{parskip}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+$for(beameroption)$
+\setbeameroption{$beameroption$}
+$endfor$
+\widowpenalties 1 10000
+\raggedbottom
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+\usepackage{longtable,booktabs,array}
+\newcounter{none}
+\usepackage{calc}
+\usepackage{caption}
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\def\fps@figure{htbp}
+\makeatother
+$if(strikeout)$
+\usepackage{soul}
+$endif$
+$if(csl-refs)$
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ \let\@cite@ofmt\@firstofone
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2]
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+$endif$
+\setlength{\emergencystretch}{3em}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$for(header-includes)$
+$header-includes$
+$endfor$
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{}
+\urlstyle{same}
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+  colorlinks=true,
+  breaklinks=true,
+  urlcolor=BaseColor,
+  citecolor=BaseColor,
+  linkcolor=BaseColor,
+  pdfcreator={LaTeX via pandoc}}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfsuppresswarningpagegroup\endcsname\relax
+\else
+  \pdfsuppresswarningpagegroup=1\relax
+\fi
+
+% ---- title data ---------------------------------------------------------------
+$if(title)$
+\title$if(shorttitle)$[$shorttitle$]$endif${$title$}
+$endif$
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
+\author$if(shortauthor)$[$shortauthor$]$endif${$for(author)$$author$$sep$ \and $endfor$}
+\date{$date$}
+$if(institute)$
+\institute$if(shortinstitute)$[$shortinstitute$]$endif${$for(institute)$$institute$$sep$ \and $endfor$}
+$endif$
+
+\begin{document}
+$if(title)$
+\begin{frame}[t,titleimage]{-}
+\titlepage%
+\end{frame}
+$endif$
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(toc)$
+\begin{frame}[title]{-}
+\tableofcontents
+\end{frame}
+$endif$
+$body$
+
+$for(include-after)$
+$include-after$
+
+$endfor$
+\end{document}

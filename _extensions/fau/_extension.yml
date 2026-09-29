@@ -1,0 +1,17 @@
+title: FAU slides
+author: dorene
+version: 0.1.0
+quarto-required: ">=1.4.0"
+contributes:
+  formats:
+    beamer:
+      brand: fau
+      template: template.latex
+      pdf-engine: pdflatex
+      slide-level: 2
+      latex-auto-install: false
+      aspectratio: 169
+      fau-institute: FAU
+      filters:
+        - path: ../shared/layouts.lua
+          at: post-render

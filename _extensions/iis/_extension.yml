@@ -1,0 +1,25 @@
+title: Fraunhofer IIS slides
+author: dorene
+version: 0.1.0
+quarto-required: ">=1.4.0"
+contributes:
+  formats:
+    beamer:
+      brand: iis
+      template: template.latex
+      pdf-engine: lualatex
+      slide-level: 2
+      latex-auto-install: false
+      aspectratio: 169
+      iis-titlepage: 1
+      closing: true
+      filters:
+        - path: ../shared/layouts.lua
+          at: post-render
+    pptx:
+      brand: iis
+      iis-titlepage: 1
+      closing: true
+      filters:
+        - path: ../shared/dump-ast.lua
+          at: post-finalize

@@ -1,0 +1,28 @@
+# Python and Quarto
+.venv/
+__pycache__/
+.quarto/
+/_environment.local
+
+# Rendered decks and intermediates
+slides/**/*.pdf
+slides/**/*.pptx
+slides/**/*.tex
+slides/**/*.log
+slides/**/*.ast.json
+slides/**/*_files/
+
+# Brand assets staged into deck directories by tools/stage.py
+slides/**/theme
+slides/**/logos
+slides/**/iis-images
+slides/**/styles
+slides/**/template-art
+
+# Proprietary fonts, logos and templates: keep out of any public remote
+assets/
+
+/.quarto/
+**/*.quarto_ipynb
+
+slides/**/iis-pptx/

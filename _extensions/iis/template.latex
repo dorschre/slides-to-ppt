@@ -1,0 +1,390 @@
+% Pandoc template for Fraunhofer IIS beamer slides. Compile with LuaLaTeX.
+%
+% The slides follow the PowerPoint template of the institute, so that PDF and
+% PPTX of one deck look alike. The beamer theme of the institute provides the
+% fonts and colours; positions and sizes are those of the PowerPoint master,
+% scaled from its page (33.867 cm x 19.05 cm) to the beamer page
+% (16 cm x 9 cm): lengths and font sizes are multiplied by 0.4724.
+%
+% Files are resolved relative to the working directory. tools/stage.py links
+% theme/, logos/ and iis-images/ into the deck directory and copies the
+% pictures of the PowerPoint layouts to iis-pptx/.
+\PassOptionsToPackage{shorthands=off$if(babel-lang)$,$babel-lang$,main=$babel-lang$$endif$}{babel}
+\documentclass[aspectratio=169,10pt,ignorenonframetext,xcolor={table}$if(handout)$,handout$endif$]{beamer}
+
+\usepackage{theme/beamerthemeIIS}
+\usepackage{etoolbox}
+
+% ---- colours of the PowerPoint theme ------------------------------------------
+\definecolor{IISgreen}{HTML}{179C7D}      % accent 1
+\definecolor{IISdbluegreen}{HTML}{005B7F} % accent 2
+\definecolor{IISlightblue}{HTML}{A6BBC8}  % background 2
+\definecolor{IIStitleA}{HTML}{015F82}
+\definecolor{IIStitleB}{HTML}{1FB7B4}
+\definecolor{IIStablehead}{HTML}{179C7D}
+\definecolor{IIStableA}{HTML}{CBDFD9}
+\definecolor{IIStableB}{HTML}{E7F0ED}
+\definecolor{IIScode}{HTML}{F2F2F2}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{frametitle}{fg=IISdbluegreen}
+\setbeamercolor{framesubtitle}{fg=IISdbluegreen}
+\setbeamercolor{itemize item}{fg=IISgreen}
+\setbeamercolor{itemize subitem}{fg=IISlightblue}
+\setbeamercolor{itemize subsubitem}{fg=IISlightblue}
+\setbeamercolor{enumerate item}{fg=IISgreen}
+\setbeamercolor{enumerate subitem}{fg=IISlightblue}
+\setbeamercolor{enumerate subsubitem}{fg=IISlightblue}
+\setbeamercolor{caption}{fg=black!65}
+\setbeamercolor{caption name}{fg=black!65}
+
+% ---- fonts: Frutiger LT Com 45 Light, bold and italic faces -------------------
+\setsansfont{Frutiger_ftl_ltc_}[Path=theme/,Extension=.ttf,Scale=1.0,
+  BoldFont=Frutiger_bold,
+  ItalicFont=Frutiger_ftli_fhg,
+  BoldItalicFont=Frutiger_bold]
+\newfontfamily\IISroman[Path=theme/,Extension=.ttf,FakeBold=1.5]{Frutiger_ftr_ltc_}
+
+% font sizes: PowerPoint size x 0.4724, line spacing 110 %
+\makeatletter
+\renewcommand\normalsize{\@setfontsize\normalsize{6.61pt}{8.73pt}%   14 pt
+  \abovedisplayskip 3pt plus 1pt minus 1pt
+  \belowdisplayskip \abovedisplayskip
+  \abovedisplayshortskip 1pt plus 1pt
+  \belowdisplayshortskip 2pt plus 1pt minus 1pt}
+\renewcommand\tiny{\@setfontsize\tiny{3.78pt}{4.99pt}}%                8 pt
+\renewcommand\scriptsize{\@setfontsize\scriptsize{4.25pt}{5.61pt}}%    9 pt
+\renewcommand\footnotesize{\@setfontsize\footnotesize{4.72pt}{6.23pt}}% 10 pt
+\renewcommand\small{\@setfontsize\small{5.67pt}{7.48pt}}%             12 pt
+\renewcommand\large{\@setfontsize\large{7.56pt}{9.98pt}}%             16 pt
+\renewcommand\Large{\@setfontsize\Large{8.50pt}{11.22pt}}%            18 pt
+\renewcommand\LARGE{\@setfontsize\LARGE{9.45pt}{12.47pt}}%            20 pt
+\renewcommand\huge{\@setfontsize\huge{11.34pt}{14.97pt}}%             24 pt
+\renewcommand\Huge{\@setfontsize\Huge{15.12pt}{18.14pt}}%             32 pt
+\makeatother
+\DeclareMathSizes{6.61}{6.61}{4.8}{3.8}
+\DeclareMathSizes{7.56}{7.56}{5.4}{4.2}
+\DeclareMathSizes{5.67}{5.67}{4.2}{3.4}
+\AtBeginDocument{\normalsize}
+\setbeamerfont{normal text}{size=\normalsize}
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\normalsize}
+\setbeamerfont{frametitle}{series=\bfseries,size=\huge}
+\setbeamerfont{framesubtitle}{series=\mdseries,size=\LARGE,family=\sffamily}
+\setbeamerfont{caption}{size=\footnotesize}
+\setbeamerfont{caption name}{size=\footnotesize}
+\newcommand{\iisfootfont}{\tiny}
+
+% ---- language dependent strings -----------------------------------------------
+\newcommand{\iispagename}{\iflanguage{ngerman}{Seite}{Page}}
+$if(closing-text)$
+\newcommand{\iisclosingtext}{$closing-text$}
+$else$
+\newcommand{\iisclosingtext}{\iflanguage{ngerman}%
+  {Vielen Dank für Ihre Aufmerksamkeit}%
+  {Thank you for your attention}}
+$endif$
+\newcommand{\iisdash}[2]{{\IISroman\fontsize{#1}{#2}\selectfont —\par}}
+% TikZ fixes the word space when a node starts: reset it after a font change
+\newcommand{\iisragged}{\spaceskip=0pt\xspaceskip=0pt\rightskip=0pt plus 1fil\relax
+  \hyphenpenalty=10000\exhyphenpenalty=10000\relax}
+\newcommand{\iisfont}[2]{\fontsize{#1}{#2}\selectfont\iisragged}
+% PowerPoint does not hyphenate
+\AtBeginDocument{\hyphenpenalty=10000\exhyphenpenalty=10000}
+
+% ---- page geometry ------------------------------------------------------------
+% text area: 1.33 cm from the left, 31.2 cm wide
+\setbeamersize{text margin left=.628cm,text margin right=.632cm}
+% all positions are measured from the upper left corner of the page
+\newcommand{\iisat}[2]{([xshift=#1,yshift=-#2]current page.north west)}
+
+% frame title 1.10 cm, subline 2.16 cm, green rule 3.46 cm, text from 4.73 cm
+\makeatletter
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=14.74cm,align=left]
+      at \iisat{.628cm}{.59cm}
+      {\usebeamerfont{frametitle}\iisragged\usebeamercolor[fg]{frametitle}\insertframetitle\strut};
+    \ifx\insertframesubtitle\@empty\else
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=14.74cm,align=left]
+        at \iisat{.628cm}{1.09cm}
+        {\usebeamerfont{framesubtitle}\iisragged\usebeamercolor[fg]{framesubtitle}\insertframesubtitle\strut};
+    \fi
+    \draw[IISgreen,line width=1.89pt] \iisat{.628cm}{1.635cm} -- ++(.472cm,0);
+  \end{tikzpicture}%
+  \vskip\iisbodyskip
+}
+\makeatother
+\newlength{\iisbodyskip}
+\setlength{\iisbodyskip}{1.93cm}
+
+% footer: rule at 17.07 cm, texts centred on 18.10 cm, logo at 28.64 cm
+\setbeamertemplate{footline}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \draw[IISlightblue,line width=.71pt] \iisat{0cm}{8.065cm} -- ++(\paperwidth,0);
+    \node[anchor=west,inner sep=0pt,font=\iisfootfont] at \iisat{.628cm}{8.551cm}
+      {\iispagename~\insertframenumber};
+    \node[anchor=west,inner sep=0pt,font=\iisfootfont] at \iisat{1.824cm}{8.551cm}
+      {\insertdate};
+    \node[anchor=west,inner sep=0pt,font=\iisfootfont] at \iisat{3.014cm}{8.551cm}
+      {$footer$};
+    \node[anchor=center,inner sep=0pt,font=\iisfootfont\bfseries] at \iisat{8cm}{8.551cm}
+      {$classification$};
+    \node[anchor=north west,inner sep=0pt] at \iisat{13.531cm}{8.310cm}
+      {\includegraphics[width=1.843cm]{logos/02_iis_cmyk.pdf}};
+  \end{tikzpicture}%
+}
+
+% ---- lists: bullets at 0.5 cm per level, small squares ------------------------
+\setlength{\leftmargini}{.236cm}
+\setlength{\leftmarginii}{.236cm}
+\setlength{\leftmarginiii}{.236cm}
+\setlength{\labelsep}{.156cm}
+\makeatletter
+\def\@listi{\leftmargin\leftmargini \topsep 0pt \partopsep 0pt \parsep 0pt \itemsep 0pt}
+\let\@listI\@listi
+\def\@listii{\leftmargin\leftmarginii \topsep 0pt \partopsep 0pt \parsep 0pt \itemsep 0pt}
+\def\@listiii{\leftmargin\leftmarginiii \topsep 0pt \partopsep 0pt \parsep 0pt \itemsep 0pt}
+\makeatother
+\AfterEndEnvironment{itemize}{\vspace{-\parskip}}
+\AfterEndEnvironment{enumerate}{\vspace{-\parskip}}
+\newcommand{\iisbullet}{\raisebox{.58ex}{\tikz{\fill (0,0) rectangle (.068,.068);}}}
+\setbeamertemplate{itemize item}{\iisbullet}
+\setbeamertemplate{itemize subitem}{\iisbullet}
+\setbeamertemplate{itemize subsubitem}{\iisbullet}
+\setbeamertemplate{enumerate item}{\makebox[.316cm][l]{\insertenumlabel.}}
+\setbeamertemplate{enumerate subitem}{\makebox[.316cm][l]{\insertsubenumlabel.}}
+\setbeamertemplate{enumerate subsubitem}{\makebox[.316cm][l]{\insertsubsubenumlabel.}}
+\AtBeginEnvironment{enumerate}{%
+  \setlength{\leftmargini}{.472cm}%
+  \setlength{\leftmarginii}{.472cm}%
+  \setlength{\leftmarginiii}{.472cm}}
+
+% ---- subheadings (### in Markdown): bold, accent colour -----------------------
+\setbeamertemplate{block begin}{%
+  \par{\bfseries\large\color{IISgreen}\insertblocktitle\par}}
+\setbeamertemplate{block end}{\par}
+
+% ---- title page: PowerPoint layout 1 ------------------------------------------
+\newcommand{\iistitlevariant}{$if(iis-titlepage)$$iis-titlepage$$else$1$endif$}
+\newsavebox{\iistitlebox}
+\setbeamertemplate{title page}{%
+  \sbox{\iistitlebox}{\parbox[b]{6.823cm}{\raggedright\color{white}%
+    \parskip=0pt\hyphenpenalty=10000\exhyphenpenalty=10000
+    {\fontsize{15.12}{18.14}\selectfont\inserttitle\par}%
+    \iisdash{19.65pt}{16.63pt}%
+    \vspace{7.56pt}%
+    {\bfseries\fontsize{7.56}{9.98}\selectfont
+$if(subtitle)$
+     \insertsubtitle\par
+$endif$
+$if(iis-people)$
+     $iis-people$\par
+$endif$
+     \insertdate\par}}}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north west,inner sep=0pt] at (current page.north west)
+      {\includegraphics[width=\paperwidth,height=\paperheight]{%
+$if(title-image)$
+        $title-image$%
+$else$
+        \ifnum\iistitlevariant=2 iis-images/Titelseite2_building_IIS.jpg%
+        \else iis-images/Titelseite1_Chip_HG.jpg\fi
+$endif$
+      }};
+    \node[anchor=north west,inner sep=0pt] at \iisat{.638cm}{.638cm}
+      {\includegraphics[width=3.307cm]{iis-pptx/logo-$iis-lang$.png}};
+    \pgfmathsetlengthmacro{\iistitleheight}{%
+      max(4.134cm,\ht\iistitlebox+\dp\iistitlebox+.944cm)}
+    \shade[left color=IIStitleA,right color=IIStitleB,shading angle=75,opacity=.95]
+      \iisat{8.235cm}{7.857cm} rectangle ++(7.765cm,\iistitleheight);
+    \node[anchor=south west,inner sep=0pt,outer sep=0pt,text=white]
+      at \iisat{8.707cm}{7.385cm} {\usebox{\iistitlebox}};
+  \end{tikzpicture}
+}
+
+% ---- chapter slide: PowerPoint layout 12 --------------------------------------
+\newcommand{\iissectionnumber}{\ifnum\value{section}<10 0\fi\arabic{section}}
+\AtBeginSection{%
+  \begin{frame}
+    \hypersetup{linkcolor=white}%
+    \begin{tikzpicture}[remember picture,overlay]
+      \begin{scope}
+        \clip (current page.north west) rectangle \iisat{\paperwidth}{8.074cm};
+        \node[anchor=north west,inner sep=0pt] at (current page.north west)
+          {\includegraphics[width=\paperwidth]{iis-pptx/chapter.jpg}};
+      \end{scope}
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=9.643cm,align=left,text=white]
+        at \iisat{.628cm}{2.71cm}
+        {\parskip=0pt
+         {\bfseries\iisfont{7.56}{9.98}\iissectionnumber\par}%
+         \iisdash{19.65pt}{15.12pt}%
+         \vspace{3.02pt}%
+         {\iisfont{15.12}{18.14}\insertsection\par}};
+    \end{tikzpicture}
+  \end{frame}
+}
+
+% ---- pandoc support -----------------------------------------------------------
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8.98pt}% 19 pt after a paragraph
+\makeatletter
+\def\@minipagerestore{\setlength{\parskip}{8.98pt}}% columns are minipages
+\makeatother
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+$for(beameroption)$
+\setbeameroption{$beameroption$}
+$endfor$
+\widowpenalties 1 10000
+\raggedbottom
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+\fvset{fontsize=\small}
+% code block: grey box inside the text area, colours of the PPTX output
+\newsavebox{\iiscodebox}
+\AtBeginDocument{%
+  \renewenvironment{Shaded}%
+    {\par\setlength{\fboxsep}{3.78pt}%
+     \begin{lrbox}{\iiscodebox}\begin{minipage}{\dimexpr\linewidth-2\fboxsep\relax}\color[HTML]{262626}}%
+    {\end{minipage}\end{lrbox}\noindent\colorbox{IIScode}{\usebox{\iiscodebox}}\par}%
+  \renewcommand{\KeywordTok}[1]{\textcolor[HTML]{005B7F}{#1}}%
+  \renewcommand{\ControlFlowTok}[1]{\textcolor[HTML]{005B7F}{#1}}%
+  \renewcommand{\OperatorTok}[1]{#1}%
+  \renewcommand{\FunctionTok}[1]{\textcolor[HTML]{005B7F}{#1}}%
+  \renewcommand{\BuiltInTok}[1]{\textcolor[HTML]{008598}{#1}}%
+  \renewcommand{\DataTypeTok}[1]{\textcolor[HTML]{008598}{#1}}%
+  \renewcommand{\DecValTok}[1]{\textcolor[HTML]{008598}{#1}}%
+  \renewcommand{\FloatTok}[1]{\textcolor[HTML]{008598}{#1}}%
+  \renewcommand{\BaseNTok}[1]{\textcolor[HTML]{008598}{#1}}%
+  \renewcommand{\StringTok}[1]{\textcolor[HTML]{179C7D}{#1}}%
+  \renewcommand{\VerbatimStringTok}[1]{\textcolor[HTML]{179C7D}{#1}}%
+  \renewcommand{\SpecialStringTok}[1]{\textcolor[HTML]{179C7D}{#1}}%
+  \renewcommand{\CharTok}[1]{\textcolor[HTML]{179C7D}{#1}}%
+  \renewcommand{\SpecialCharTok}[1]{\textcolor[HTML]{179C7D}{#1}}%
+  \renewcommand{\CommentTok}[1]{\textcolor[HTML]{7F7F7F}{\textit{#1}}}%
+  \renewcommand{\DocumentationTok}[1]{\textcolor[HTML]{7F7F7F}{\textit{#1}}}%
+  \renewcommand{\NormalTok}[1]{#1}%
+  \renewcommand{\VariableTok}[1]{#1}%
+  \renewcommand{\ImportTok}[1]{\textcolor[HTML]{005B7F}{#1}}%
+}
+\usepackage{longtable,booktabs,array}
+\newcounter{none}
+\usepackage{calc}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{%
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi%
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+\def\fps@figure{htbp}
+\makeatother
+$if(strikeout)$
+\usepackage{luacolor}
+\usepackage[soul]{lua-ul}
+$endif$
+$if(csl-refs)$
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ \let\@cite@ofmt\@firstofone
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2]
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+$endif$
+\setlength{\emergencystretch}{3em}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$for(header-includes)$
+$header-includes$
+$endfor$
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{}
+\urlstyle{same}
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+  colorlinks=true,
+  breaklinks=true,
+  urlcolor=IISgreen,
+  citecolor=IISgreen,
+  linkcolor=IISdbluegreen,
+  pdfcreator={LaTeX via pandoc}}
+
+% ---- title data ---------------------------------------------------------------
+$if(title)$
+\title$if(shorttitle)$[$shorttitle$]$endif${$title$}
+$endif$
+\subtitle{$subtitle$}
+\author{$for(author)$$author$$sep$, $endfor$}
+\date{$date$}
+\institute{$for(institute)$$institute$$sep$, $endfor$}
+
+\begin{document}
+$if(title)$
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+$endif$
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(toc)$
+\begin{frame}[t]{$if(toc-title)$$toc-title$$else$\contentsname$endif$}
+\tableofcontents
+\end{frame}
+$endif$
+$body$
+
+$for(include-after)$
+$include-after$
+
+$endfor$
+$if(closing)$
+% closing slide: PowerPoint layout 29
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north west,inner sep=0pt] at (current page.north west)
+      {\includegraphics[width=\paperwidth,height=\paperheight]{iis-pptx/final.jpg}};
+    \node[anchor=north west,inner sep=0pt] at \iisat{12.06cm}{.624cm}
+      {\includegraphics[width=3.307cm]{iis-pptx/logo-$iis-lang$.png}};
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=14.74cm,align=left,text=white]
+      at \iisat{.628cm}{3.20cm}
+      {\parskip=0pt
+       {\iisfont{31.18}{37.42}\iisclosingtext\par}%
+       \iisdash{40.54pt}{34.02pt}};
+  \end{tikzpicture}
+\end{frame}
+$endif$
+\end{document}

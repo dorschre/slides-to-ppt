@@ -1,0 +1,8 @@
+project:
+  title: slides-to-ppt
+  render:
+    - "slides/**/*.qmd"
+  pre-render:
+    - .venv/bin/python tools/stage.py
+  post-render:
+    - .venv/bin/python tools/postrender.py
