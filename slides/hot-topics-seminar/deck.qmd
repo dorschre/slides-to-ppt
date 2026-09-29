@@ -83,7 +83,7 @@ Developing a Grafana SPARQL Datasource Plugin
 - Master IIS - Project Seminar (5 ECTS; Studienbeginn ab 2021)
 - Master IIS - Project Seminar (10 ECTS; Studienbeginn ab 2021)
 - Master Data Science – Application Subject IIS (5 ECTS)
-- **Please check on mycampus, if the module is selectable for you!**
+- **Please check on campo, if the module is selectable for you!**
 
 ## Seminar Scope
 
